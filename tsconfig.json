@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "lib": ["ES2025"],
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "removeComments": true,
+    "sourceMap": true,
+    "strict": true,
+    "types": ["node"]
+  },
+  "exclude": []
+}

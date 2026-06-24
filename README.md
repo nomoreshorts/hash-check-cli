@@ -1,0 +1,1 @@
+A simple CLI program written in Typescript for checking a file against a reference hash.
