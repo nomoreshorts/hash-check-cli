@@ -19,6 +19,8 @@ export async function hashFromFile(filePath:PathLike, algorithm:string = 'sha256
     if (err.code == 'ENOENT') {
       console.error('Error: File', filePath, 'does not exist.')
       return null;
+    } else if (err.code == 'EISDIR') {
+      console.error('Error:', filePath, 'is a directory.')
     } else {
       throw err
     }
@@ -31,19 +33,17 @@ if (import.meta.main) {
   const [{ createInterface }, 
     { getHashes }, 
     readlineUtils,
-    { existsSync }] = await Promise.all([
+    fileUtils] = await Promise.all([
     import("node:readline/promises"),
     import("node:crypto"),
     import("./readlineUtils.js"),
-    import("node:fs")
+    import("./fileUtils.js")
   ])
 
   let filePath
   if (process.argv[2]) {
-    if (existsSync(process.argv[2])) {
+    if (await fileUtils.isFile(process.argv[2], "ignoring...")) {
       filePath = process.argv[2]
-    } else {
-      console.warn(process.argv[2], "is not a valid file. Ignoring...")
     }
   }
 
@@ -51,7 +51,7 @@ if (import.meta.main) {
   if (filePath == undefined) {
     filePath = await readlineUtils.autoCheckQuestion(rlInterface, "Input file to get the hash of: ", {
       rejectIfInputEmpty: true,
-      test: input => existsSync(input),
+      test: input => fileUtils.isFile(input),
       testFailedMessage: 'File not found. Please try again.'
     })
   }
