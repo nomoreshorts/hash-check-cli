@@ -30,16 +30,29 @@ export async function hashFromFile(filePath:PathLike, algorithm:string = 'sha256
 if (import.meta.main) {
   const [{ createInterface }, 
     { getHashes }, 
-    readlineUtils] = await Promise.all([
+    readlineUtils,
+    { existsSync }] = await Promise.all([
     import("node:readline/promises"),
     import("node:crypto"),
-    import("./readlineUtils.js")
+    import("./readlineUtils.js"),
+    import("node:fs")
   ])
 
+  let filePath
+  if (process.argv[2]) {
+    if (existsSync(process.argv[2])) {
+      filePath = process.argv[2]
+    } else {
+      console.warn(process.argv[2], "is not a valid file. Ignoring...")
+    }
+  }
+
   const rlInterface = createInterface(process.stdin, process.stdout)
-  const filePath = await readlineUtils.autoCheckQuestion(rlInterface, "Input file to get the hash of: ", {
-    rejectIfInputEmpty: true,
-  })
+  if (filePath == undefined) {
+    filePath = await readlineUtils.autoCheckQuestion(rlInterface, "Input file to get the hash of: ", {
+      rejectIfInputEmpty: true,
+    })
+  }
   
   let hashAlgo = await readlineUtils.autoCheckQuestion(rlInterface, "Input the desired hash algorithm? (sha256):", {
     placeholderIfInputEmpty: 'sha256',

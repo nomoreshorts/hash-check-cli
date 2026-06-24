@@ -2,6 +2,16 @@ import { createInterface } from "node:readline/promises";
 import { hashFromFile } from "./hashFuncs.js";
 import { getHashes } from "node:crypto";
 import * as readlineUtils from "./readlineUtils.js"
+import { existsSync } from "node:fs";
+
+let filePath
+if (process.argv[2]) {
+  if (existsSync(process.argv[2])) {
+    filePath = process.argv[2]
+  } else {
+    console.warn(process.argv[2], "is not a valid file. Ignoring...")
+  }
+}
 
 const rlInterface = createInterface(process.stdin, process.stdout)
 
@@ -21,9 +31,13 @@ let hashEncoding = await readlineUtils.autoCheckQuestion(rlInterface, "What's th
   testFailedMessage: 'Invalid/Unsupported encoding. Please try again.'
 }) as BufferEncoding
 
-const filePath = await readlineUtils.autoCheckQuestion(rlInterface, "Input file to check the hash of: ", {
-  rejectIfInputEmpty: true,
-})
+if (filePath == undefined) {
+  filePath = await readlineUtils.autoCheckQuestion(rlInterface, "Input file to check the hash of: ", {
+    rejectIfInputEmpty: true,
+    test: existsSync,
+    testFailedMessage: 'File not found. Please try again.'
+  })
+}
 rlInterface.close()
 
 const fileHash = await hashFromFile(filePath, hashAlgo, hashEncoding)
