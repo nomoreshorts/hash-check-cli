@@ -56,13 +56,13 @@ if (import.meta.main) {
     })
   }
   
-  let hashAlgo = await readlineUtils.autoCheckQuestion(rlInterface, "Input the desired hash algorithm? (sha256):", {
+  let hashAlgo = await readlineUtils.autoCheckQuestion(rlInterface, "Input the desired hash algorithm? (sha256): ", {
     placeholderIfInputEmpty: 'sha256',
     test: input => getHashes().includes(input),
     testFailedMessage: 'Invalid/Unsupported algorithm. Please try again.'
   })
   
-  let hashEncoding = await readlineUtils.autoCheckQuestion(rlInterface, "Input the desired hash encoding? (base64):", {
+  let hashEncoding = await readlineUtils.autoCheckQuestion(rlInterface, "Input the desired hash encoding? (base64): ", {
     placeholderIfInputEmpty: 'base64',
     test: input => Buffer.isEncoding(input),
     testFailedMessage: 'Invalid/Unsupported encoding. Please try again.'
