@@ -1,5 +1,5 @@
 {
-  "name": "hash-check",
+  "name": "hash-check-cli",
   "version": "1.0.0",
   "description": "",
   "main": "dist/index.js",
@@ -7,8 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "nomoreshorts",
+  "license": "MIT",
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
