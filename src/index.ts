@@ -34,7 +34,7 @@ let hashEncoding = await readlineUtils.autoCheckQuestion(rlInterface, "What's th
 if (filePath == undefined) {
   filePath = await readlineUtils.autoCheckQuestion(rlInterface, "Input file to check the hash of: ", {
     rejectIfInputEmpty: true,
-    test: existsSync,
+    test: input => existsSync(input),
     testFailedMessage: 'File not found. Please try again.'
   })
 }

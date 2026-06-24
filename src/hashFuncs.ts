@@ -51,6 +51,8 @@ if (import.meta.main) {
   if (filePath == undefined) {
     filePath = await readlineUtils.autoCheckQuestion(rlInterface, "Input file to get the hash of: ", {
       rejectIfInputEmpty: true,
+      test: input => existsSync(input),
+      testFailedMessage: 'File not found. Please try again.'
     })
   }
   
