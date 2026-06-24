@@ -26,3 +26,34 @@ export async function hashFromFile(filePath:PathLike, algorithm:string = 'sha256
 
   return hash.digest(encoding)
 }
+
+if (import.meta.main) {
+  const [{ createInterface }, 
+    { getHashes }, 
+    readlineUtils] = await Promise.all([
+    import("node:readline/promises"),
+    import("node:crypto"),
+    import("./readlineUtils.js")
+  ])
+
+  const rlInterface = createInterface(process.stdin, process.stdout)
+  const filePath = await readlineUtils.autoCheckQuestion(rlInterface, "Input file to get the hash of: ", {
+    rejectIfInputEmpty: true,
+  })
+  
+  let hashAlgo = await readlineUtils.autoCheckQuestion(rlInterface, "Input the desired hash algorithm? (sha256):", {
+    placeholderIfInputEmpty: 'sha256',
+    test: input => getHashes().includes(input),
+    testFailedMessage: 'Invalid/Unsupported algorithm. Please try again.'
+  })
+  
+  let hashEncoding = await readlineUtils.autoCheckQuestion(rlInterface, "Input the desired hash encoding? (base64):", {
+    placeholderIfInputEmpty: 'base64',
+    test: input => Buffer.isEncoding(input),
+    testFailedMessage: 'Invalid/Unsupported encoding. Please try again.'
+  }) as BufferEncoding
+
+  rlInterface.close()
+
+  console.info("Output hash:", await hashFromFile(filePath, hashAlgo, hashEncoding))
+}
